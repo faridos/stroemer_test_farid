@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from .api_client import APIClient
+from blog.api_client import APIClient
 from blog.models import Post, Comment
 
 

@@ -9,7 +9,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Set the user field to the specific user ID provided by the assignment
-        serializer.save(author_id=99999942)
+        serializer.save(user=99999942)
 
 
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
