@@ -18,18 +18,15 @@ class Command(BaseCommand):
 
         # Insert posts into the database
         for post_data in posts_data:
-            print("------------ ")
             post = Post.objects.create(
                 title=post_data['title'],
                 body=post_data['body'],
-                # Assuming 'user_id' field is available in the API response for author information
-                user_id=post_data['userId']
+                user=post_data['userId']
             )
             self.stdout.write(self.style.SUCCESS(f'Inserted post with ID {post.id}'))
 
         # Insert comments into the database
         for comment_data in comments_data:
-            print("i am here ")
             comment = Comment.objects.create(
                 post_id=comment_data['postId'],
                 name=comment_data['name'],
