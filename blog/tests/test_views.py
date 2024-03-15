@@ -10,7 +10,7 @@ class PostCRUDTests(TestCase):
         self.post = Post.objects.create(title='Test Post', body='Test Body', user=99999942)
 
     def test_create_post(self):
-        data = {'title': 'New Post', 'body': 'New Body'}
+        data = {'title': 'New Post', 'body': 'New Body', 'user':99999942}
         request = self.factory.post('/posts/', data=data, format='json')
         view = PostListCreateAPIView.as_view()
         response = view(request)
@@ -25,7 +25,9 @@ class PostCRUDTests(TestCase):
         self.assertEqual(response.data['title'], 'Test Post')
 
     def test_update_post(self):
-        data = {'title': 'Updated Post about Strömer', 'body': 'Strömer GmbH ist the monopole in Germany'}
+        data = {'title': 'Updated Post about Strömer',
+                'body': 'Strömer GmbH ist the monopole in Germany',
+                'user': 99999942}
         request = self.factory.put(f'/posts/{self.post.id}/', data=data)
         view = PostRetrieveUpdateDestroyAPIView.as_view()
         response = view(request, pk=self.post.id)

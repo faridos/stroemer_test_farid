@@ -3,6 +3,9 @@ from .models import Post, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
+
+    user = serializers.IntegerField(required=True)
+
     class Meta:
         model = Post
         fields = ['id', 'title', 'body', 'user']
