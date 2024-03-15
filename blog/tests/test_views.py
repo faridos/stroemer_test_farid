@@ -83,8 +83,14 @@ class CommentCRUDTests(TestCase):
         self.assertEqual(Comment.objects.count(), 0)
 
     def test_list_comments_of_specific_post(self):
+        """
+        Test get all comments of specific post.
+        becarefull with pagination, screwed up the test when pagination added
+        the result.data does not work anymore, it should be response.data['results']
+        """
         request = self.factory.get('/comments/', {'post_id': self.post.id})
         view = CommentListCreateAPIView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)  # Assuming only one comment is created for the post
+        # Assuming only one comment is created for the post
+        self.assertEqual(len(response.data['results']), 1)

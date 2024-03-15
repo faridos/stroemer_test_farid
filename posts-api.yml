@@ -92,6 +92,13 @@ paths:
   /comments:
     get:
       summary: Retrieve all comments
+      parameters:
+        - name: post_id
+          in: query
+          required: false
+          description: ID of the post to retrieve comments for
+          schema:
+            type: integer
       responses:
         '200':
           description: A list of comments

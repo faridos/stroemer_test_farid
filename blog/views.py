@@ -11,7 +11,7 @@ class CustomPageNumberPagination(PageNumberPagination):
 
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -29,6 +29,14 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        queryset = Comment.objects.all().order_by('id')
+        post_id = self.request.query_params.get('post_id')
+        if post_id:
+            queryset = queryset.filter(post_id=post_id)
+            print("###################", len(queryset), queryset)
+        return queryset
 
 
 class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
