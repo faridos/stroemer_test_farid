@@ -1,7 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory
-from .models import Post, Comment
-from .views import PostListCreateAPIView, PostRetrieveUpdateDestroyAPIView, CommentListCreateAPIView, CommentRetrieveUpdateDestroyAPIView
+from blog.models import Post, Comment
+from blog.views import PostListCreateAPIView, PostRetrieveUpdateDestroyAPIView, CommentListCreateAPIView, CommentRetrieveUpdateDestroyAPIView
 
 
 class PostCRUDTests(TestCase):
