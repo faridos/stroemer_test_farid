@@ -23,3 +23,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.name} on {self.post.title}"
+
+
+class FakeUser:
+    def __init__(self):
+        self.is_authenticated = True
