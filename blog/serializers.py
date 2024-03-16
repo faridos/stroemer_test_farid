@@ -1,3 +1,8 @@
+"""
+File: serializers.py
+Author: Farid Maghraoui
+Description: This file contains serializers for the Post and Comment models.
+"""
 from rest_framework import serializers
 from .models import Post, Comment
 

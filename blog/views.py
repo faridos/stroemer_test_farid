@@ -1,7 +1,14 @@
+"""
+File: views.py
+Author: Farid Maghraoui
+Description: This file contains API views for managing posts and comments.
+"""
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework.pagination import PageNumberPagination
 
 
 class CustomPageNumberPagination(PageNumberPagination):
@@ -26,7 +33,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 
     For creating a new post, the `title`, `body`, and `user` fields are required.
     """
-
+    permission_classes = [IsAuthenticated]
     queryset = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
     pagination_class = CustomPageNumberPagination
@@ -55,7 +62,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     For deleting a post, the post will be permanently removed from the database.
     """
-
+    permission_classes = [IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -73,7 +80,7 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
 
     For creating a new comment, the `post`, `name`, `email`, and `body` fields are required.
     """
-
+    permission_classes = [IsAuthenticated]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CustomPageNumberPagination
@@ -106,6 +113,6 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
 
     For deleting a comment, the comment will be permanently removed from the database.
     """
-
+    permission_classes = [IsAuthenticated]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer

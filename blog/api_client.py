@@ -1,6 +1,10 @@
-# api_client.py
-
+"""
+File: api_client.py
+Author: Farid Maghraoui
+Description: This file contains an API client class for making HTTP requests to a specified base URL.
+"""
 import requests
+
 
 class APIClient:
     def __init__(self, base_url):

@@ -1,3 +1,8 @@
+"""
+File: models.py
+Author: Farid Maghraoui
+Description: This file contains the models of the Post and Comment.
+"""
 from django.db import models
 
 

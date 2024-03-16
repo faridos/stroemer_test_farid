@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from myauth.views import refresh_token, generate_token
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -33,12 +34,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # Other URL patterns...
-
-]
-urlpatterns = [
     path('api/v1/', include('blog.urls')),
-    #path('api-auth/', include('rest_framework.urls')),
+    # auth
+    path('api/v1/mytoken/', generate_token, name='token_obtain_pair'),
+    path('api/v1/mytoken/refresh/', refresh_token, name='token_refresh'),
+    # api docs
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
