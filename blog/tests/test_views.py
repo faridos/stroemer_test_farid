@@ -4,12 +4,6 @@ from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 
 from blog.models import Post, Comment, FakeUser
-from blog.views import (
-    PostListCreateAPIView,
-    PostRetrieveUpdateDestroyAPIView,
-    CommentListCreateAPIView,
-    CommentRetrieveUpdateDestroyAPIView
-)
 
 
 class PostCRUDTests(TestCase):
