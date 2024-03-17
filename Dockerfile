@@ -1,4 +1,3 @@
-# Use an official Python runtime as a parent image
 FROM python:3.9
 
 # Set environment variables
@@ -11,5 +10,16 @@ WORKDIR /app
 COPY . /app/
 
 # Install dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# cleanup
+RUN apt-get clean && \
+rm -rf /var/lib/apt/lists/* && \
+rm -rf /tmp/*
+
+# Set a non-root user
+RUN useradd -ms /bin/bash faridmagh \
+    && chown -R faridmagh:faridmagh /app
+
+USER faridmagh
