@@ -4,7 +4,9 @@ services:
   app:
     build: .
     restart: always
-    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations &&
+                    python manage.py migrate &&
+                    python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -18,11 +20,12 @@ services:
     image: postgres:12-alpine
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: stroemer_db
+      POSTGRES_USER: faridmagh
+      POSTGRES_PASSWORD: ADADfgflslksflkoeWEW34dfdTZT56
     volumes:
       - postgres_data:/var/lib/postgresql/datav12
+
 
 volumes:
   postgres_data:
