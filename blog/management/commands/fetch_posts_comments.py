@@ -2,62 +2,24 @@ from django.core.management.base import BaseCommand
 import time
 from blog.api_client import APIClient
 from blog.models import Post, Comment
+from multiprocessing import Pool
 
-
-class Command(BaseCommand):
-    help = 'Fetch posts and comments from an API and insert them into the database'
-
-    def handle(self, *args, **options):
-        start_time = time.time()
-        # Instantiate the APIClient with the base URL of the API
-        api_client = APIClient(base_url='https://jsonplaceholder.typicode.com/')
-
-        # Fetch posts from the API
-        posts_data = api_client.get('posts')
-
-        # Fetch comments from the API
-        comments_data = api_client.get('posts/{post_id}/comments')
-
-        # Insert posts into the database
-        for post_data in posts_data:
-            post = Post.objects.update_or_create(
-                title=post_data['title'],
-                body=post_data['body'],
-                user=post_data['userId'],
-                defaults={
-                    'title': post_data['title'],
-                    'body': post_data['body'],
-                    'user': post_data['userId']}
-            )
-            msg = f'Inserted post with ID {post[0].id}' if post[1] else f'Updated post with ID {post[0].id}'
-            self.stdout.write(self.style.SUCCESS(msg))
-
-        # Insert comments into the database
-        for comment_data in comments_data:
-            comment = Comment.objects.update_or_create(
-                post_id=comment_data['postId'],
-                name=comment_data['name'],
-                email=comment_data['email'],
-                body=comment_data['body'],
-                defaults={
-                    'post_id': comment_data['postId'],
-                    'name': comment_data['name'],
-                    'email': comment_data['email'],
-                    'body': comment_data['body']
-                }
-            )
-            # post is tuple, post[1] : created : boolean
-            msg = f'Inserted comment with ID {comment[0].id}' if comment[1] else f'Updated comment with ID {comment[0].id}'
-            self.stdout.write(self.style.SUCCESS(msg))
-        end_time = time.time()
-        print(f"Execution time: {end_time - start_time} seconds")
-
+# #######################################ASYNC APPROACH#########################
 # from blog.api_client import APIClient
 # from blog.models import Post, Comment
 # from django.core.management.base import BaseCommand
 # from channels.db import database_sync_to_async
 # import asyncio
 # import time
+#
+# BASE_API_URL = 'https://jsonplaceholder.typicode.com/'
+# api_client = APIClient(base_url=BASE_API_URL)
+#
+#
+# async def process_comments(post_id):
+#     comments = await api_client.get(f'posts/{post_id}/comments')
+#     return comments
+#
 #
 # class Command(BaseCommand):
 #     help = 'Sync data from remote server to local database'
@@ -69,53 +31,101 @@ class Command(BaseCommand):
 #         print(f"Execution time: {end_time - start_time} seconds")
 #
 #     async def sync_data(self):
-#         api_client = APIClient(base_url='https://jsonplaceholder.typicode.com/')
 #         posts = await api_client.get('posts')
-#         comments = await api_client.get('comments')
-#
-#         # Fetch existing post ids and comment ids from the local database asynchronously
-#         existing_post_ids = await self.get_existing_post_ids()
-#         existing_comment_ids = await self.get_existing_comment_ids()
-#
-#         # Process posts
+#         # Fetch comments concurrently using asyncio
+#         comments_list = await asyncio.gather(*[process_comments(post['id']) for post in posts])
 #         tasks = []
-#         for post in posts:
-#             if post['id'] not in existing_post_ids:
-#                 tasks.append(self.save_post(post))
-#         await asyncio.gather(*tasks)
-#
-#         # Process comments
-#         tasks = []
-#         for comment in comments:
-#             if comment['id'] not in existing_comment_ids:
-#                 tasks.append(self.save_comment(comment))
+#         for post, post_comments in zip(posts, comments_list):
+#             tasks.append(self.sync_post(post, post_comments))
 #         await asyncio.gather(*tasks)
 #
 #     @database_sync_to_async
-#     def get_existing_post_ids(self):
-#         return set(Post.objects.values_list('id', flat=True))
-#
-#     @database_sync_to_async
-#     def get_existing_comment_ids(self):
-#         return set(Comment.objects.values_list('id', flat=True))
-#
-#     @database_sync_to_async
-#     def save_post(self, post):
-#         # Save post to local database asynchronously
-#         return Post.objects.create(
-#             id=post['id'],
-#             title=post['title'],
-#             body=post['body'],
-#             user=post['userId']
+#     def sync_post(self, post_data, comments):
+#         id = post_data['id']
+#         title = post_data['title']
+#         body = post_data['body']
+#         user = post_data['userId']
+#         post_obj, created = Post.objects.update_or_create(
+#             id=id,
+#             title=title,
+#             body=body,
+#             user=user,
+#             defaults={'id': id, 'title': title, 'body': body, 'user': user},
 #         )
+#         msg = f'Inserted post with ID {post_obj.id}' if created else f'Updated post with ID {post_obj.id}'
+#         self.stdout.write(self.style.SUCCESS(msg))
 #
-#     @database_sync_to_async
-#     def save_comment(self, comment):
-#         # Save comment to local database asynchronously
-#         return Comment.objects.create(
-#             id=comment['id'],
-#             post_id=comment['postId'],
-#             name=comment['name'],
-#             email=comment['email'],
-#             body=comment['body']
-#         )
+#         # Create or update comments for the post
+#         for comment_data in comments:
+#             comment_obj, created = Comment.objects.update_or_create(
+#                 id=comment_data['id'],
+#                 post_id=post_obj.id,
+#                 name=comment_data['name'],
+#                 email=comment_data['email'],
+#                 body=comment_data['body'],
+#                 defaults={
+#                     'id': comment_data['id'],
+#                     'post_id': post_obj.id,
+#                     'name': comment_data['name'],
+#                     'email': comment_data['email'],
+#                     'body': comment_data['body']
+#                 }
+#             )
+#             msg = f'Inserted comment with ID {comment_obj.id}' if created else f'Updated comment with ID {comment_obj.id}'
+#             self.stdout.write(self.style.SUCCESS(msg))
+
+BASE_URL = 'https://jsonplaceholder.typicode.com/'
+api_client = APIClient(base_url=BASE_URL)
+
+
+def fetch_comments(post_id):
+    response = api_client.get(f'posts/{post_id}/comments')
+    return response
+
+
+class Command(BaseCommand):
+    help = 'Fetch posts and comments from an API and insert them into the database'
+
+    def handle(self, *args, **options):
+        start_time = time.time()
+        # Instantiate the APIClient with the base URL of the API
+        # Fetch posts from the API
+        posts_data = api_client.get('posts')
+
+        with Pool(processes=4) as pool:  # Adjust the number of processes as needed
+            comments_lists = pool.map(fetch_comments, [post['id'] for post in posts_data])
+        for post_data, comments in zip(posts_data, comments_lists):
+            id = post_data['id']
+            title = post_data['title']
+            body = post_data['body']
+            user = post_data['userId']
+            post_obj, created = Post.objects.update_or_create(
+                id=id,
+                title=title,
+                body=body,
+                user=user,
+                defaults={'id': id, 'title': title, 'body': body, 'user': user},
+            )
+            msg = f'Inserted post with ID {post_obj.id}' if created else f'Updated post with ID {post_obj.id}'
+            self.stdout.write(self.style.SUCCESS(msg))
+
+            # Create or update comments for the post
+            for comment_data in comments:
+                comment_obj, created = Comment.objects.update_or_create(
+                    id=comment_data['id'],
+                    post_id=post_obj.id,
+                    name=comment_data['name'],
+                    email=comment_data['email'],
+                    body=comment_data['body'],
+                    defaults={
+                        'id': comment_data['id'],
+                        'post_id': post_obj.id,
+                        'name': comment_data['name'],
+                        'email': comment_data['email'],
+                        'body': comment_data['body']
+                    }
+                )
+                msg = f'Inserted comment with ID {comment_obj.id}' if created else f'Updated comment with ID {comment_obj.id}'
+                self.stdout.write(self.style.SUCCESS(msg))
+        end_time = time.time()
+        print(f"Execution time: {end_time - start_time} seconds")
