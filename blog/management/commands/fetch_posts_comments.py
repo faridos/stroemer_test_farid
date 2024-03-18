@@ -73,6 +73,73 @@ from multiprocessing import Pool
 #             )
 #             msg = f'Inserted comment with ID {comment_obj.id}' if created else f'Updated comment with ID {comment_obj.id}'
 #             self.stdout.write(self.style.SUCCESS(msg))
+###################################NORMAL
+
+# from django.core.management.base import BaseCommand
+# import time
+# from blog.api_client import APIClient
+# from blog.models import Post, Comment
+# from multiprocessing import Pool
+# import requests
+# from functools import partial
+#
+# BASE_URL = 'https://jsonplaceholder.typicode.com/'
+# api_client = APIClient(base_url=BASE_URL)
+#
+#
+# def fetch_comments(post_id):
+#     response = api_client.get(f'posts/{post_id}/comments')
+#     return response
+#
+# class Command(BaseCommand):
+#     help = 'Fetch posts and comments from an API and insert them into the database'
+#
+#     def handle(self, *args, **options):
+#         start_time = time.time()
+#         # Instantiate the APIClient with the base URL of the API
+#         # Fetch posts from the API
+#         posts_data = api_client.get('posts')
+#
+#         for post_data in posts_data:
+#             # Make a request to the remote server's API endpoint to fetch comments for the current post
+#             comments = fetch_comments(post_data['id'])
+#             id = post_data['id']
+#             title = post_data['title']
+#             body = post_data['body']
+#             user = post_data['userId']
+#             post_obj, created = Post.objects.update_or_create(
+#                 id=id,
+#                 title=title,
+#                 body=body,
+#                 user=user,
+#                 defaults={'id': id, 'title': title, 'body': body, 'user': user},
+#             )
+#             msg = f'Inserted post with ID {post_obj.id}' if created else f'Updated post with ID {post_obj.id}'
+#             self.stdout.write(self.style.SUCCESS(msg))
+#
+#             # Create or update comments for the post
+#             for comment_data in comments:
+#                 comment_obj, created = Comment.objects.update_or_create(
+#                     id=comment_data['id'],
+#                     post_id=post_obj.id,
+#                     name=comment_data['name'],
+#                     email=comment_data['email'],
+#                     body=comment_data['body'],
+#                     defaults={
+#                         'id': comment_data['id'],
+#                         'post_id': post_obj.id,
+#                         'name': comment_data['name'],
+#                         'email': comment_data['email'],
+#                         'body': comment_data['body']
+#                     }
+#                 )
+#                 msg = f'Inserted comment with ID {comment_obj.id}' if created else f'Updated comment with ID {comment_obj.id}'
+#                 self.stdout.write(self.style.SUCCESS(msg))
+#         end_time = time.time()
+#         print(f"Execution time: {end_time - start_time} seconds")
+
+
+
 
 BASE_URL = 'https://jsonplaceholder.typicode.com/'
 api_client = APIClient(base_url=BASE_URL)
