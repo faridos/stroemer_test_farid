@@ -157,7 +157,10 @@ CELERY_RESULT_BACKEND = 'rpc://'
 
 CELERY_BEAT_SCHEDULE = {
     'fetch_posts_comments_daily': {
-        'task': 'your_app.tasks.fetch_posts_comments',  # Update with your actual task path
-        'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+        'task': 'blog.tasks.task_fetch_daily',  # Update with your actual task path
+        # 'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+        'schedule':  30.0,  # Run every 30 sec
     },
 }
+
+REMOTE_JSON_URL = 'https://jsonplaceholder.typicode.com/'

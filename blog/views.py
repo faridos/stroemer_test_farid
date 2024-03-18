@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+from .tasks import sync_post_with_remote, sync_comment_with_remote
 
 
 class CustomPageNumberPagination(PageNumberPagination):
@@ -48,6 +49,8 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
             serializer: Serializer instance containing post data.
         """
         serializer.save(user=99999942)
+        # Trigger synchronization task for creating a post
+        sync_post_with_remote.delay(serializer.data, action="POST")
 
 
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -65,6 +68,15 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def perform_update(self, serializer):
+        serializer.save()
+        sync_post_with_remote.delay(serializer.data, action=self.request.method)
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        # Trigger synchronization task for deleting a comment
+        sync_post_with_remote.delay(instance.id, action="DELETE")
 
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
@@ -100,6 +112,11 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
             queryset = queryset.filter(post_id=post_id)
         return queryset
 
+    def perform_create(self, serializer):
+        serializer.save()
+        # Trigger synchronization task for creating a comment
+        sync_comment_with_remote.delay(serializer.data, action="POST")
+
 
 class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -116,3 +133,12 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     permission_classes = [IsAuthenticated]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def perform_update(self, serializer):
+        serializer.save()
+        sync_comment_with_remote.delay(serializer.data, action=self.request.method)
+
+    def perform_destroy(self, instance):
+        instance.delete()
+        # Trigger synchronization task for deleting a comment
+        sync_comment_with_remote.delay(instance.id, action="DELETE")

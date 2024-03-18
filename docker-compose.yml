@@ -28,6 +28,9 @@ services:
       - postgres_data:/var/lib/postgresql/datav12
   rabbitmq:
     image: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
 
   celery:
     build:

@@ -12,7 +12,10 @@ app = Celery('stroemer_test_farid')
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 app.config_from_object('django.conf:settings', namespace='CELERY')
-
+app.conf.update(
+    broker_url=os.environ.get('CELERY_BROKER_URL', 'pyamqp://guest:guest@rabbitmq:5672//'),
+    result_backend=os.environ.get('CELERY_RESULT_BACKEND', 'rpc://'),
+)
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
