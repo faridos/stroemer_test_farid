@@ -8,9 +8,13 @@ class BlogApiTest(APITestCase):
     def setUp(self):
         self.user = FakeUser()  # Assuming you have a FakeUser class for testing purposes
         self.client.force_authenticate(user=self.user)
-        # set up test data
         self.post = Post.objects.create(title='Test Post', body='Test Body', user=1)
-        self.comment = Comment.objects.create(post=self.post, name='Test Name', email='test@example.com', body='Test Body')
+        self.comment = Comment.objects.create(
+            post=self.post,
+            name='Test Name',
+            email='test@example.com',
+            body='Test Body'
+        )
 
     def test_post_list(self):
         url = reverse('post-list-create')

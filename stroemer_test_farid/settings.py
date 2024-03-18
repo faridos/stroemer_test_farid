@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import sys
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,17 +83,25 @@ WSGI_APPLICATION = 'stroemer_test_farid.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':  os.environ.get('DB_NAME'),
-        'USER':  os.environ.get('DB_USER'),
-        'PASSWORD':  os.environ.get('POSTGRES_PASSWORD'),
-        'HOST':  os.environ.get('DB_HOST'),  # This is the name of the PostgreSQL service defined in Docker Compose
-        'PORT':  os.environ.get('DB_PORT'),
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME':  os.environ.get('DB_NAME'),
+            'USER':  os.environ.get('DB_USER'),
+            'PASSWORD':  os.environ.get('POSTGRES_PASSWORD'),
+            'HOST':  os.environ.get('DB_HOST'),  # This is the name of the PostgreSQL service defined in Docker Compose
+            'PORT':  os.environ.get('DB_PORT'),
+        }
+    }
 
 
 # Password validation
@@ -140,4 +150,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+}
+
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/'
+CELERY_RESULT_BACKEND = 'rpc://'
+
+CELERY_BEAT_SCHEDULE = {
+    'fetch_posts_comments_daily': {
+        'task': 'your_app.tasks.fetch_posts_comments',  # Update with your actual task path
+        'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+    },
 }

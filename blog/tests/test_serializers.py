@@ -11,7 +11,7 @@ class TestPostSerializer(TestCase):
         self.assertTrue(serializer.is_valid())  # raise_exception=True incase  we wanna see the error
 
     def test_invalid_serializer_data(self):
-        data = {'id': 1, 'title': 'Test Post', 'body': 'Test Body'}
+        data = {'id': 2, 'title': 'Test Post', 'body': 'Test Body'}
         serializer = PostSerializer(data=data)
         self.assertFalse(serializer.is_valid())
 
@@ -22,7 +22,7 @@ class TestCommentSerializer(TestCase):
         self.post = Post.objects.create(title='Test Post', body='Test Body', user=1)
 
     def test_valid_serializer_data(self):
-        data = {'id': 1, 'post': 1, 'name': 'Test Name', 'email': 'test@example.com', 'body': 'Test Body'}
+        data = {'id': 1, 'post': self.post.id, 'name': 'Test Name', 'email': 'test@example.com', 'body': 'Test Body'}
         serializer = CommentSerializer(data=data)
         self.assertTrue(serializer.is_valid())
 

@@ -15,6 +15,7 @@ services:
       - .env.dev
     depends_on:
       - db
+      - rabbitmq
 
   db:
     image: postgres:12-alpine
@@ -25,7 +26,30 @@ services:
       POSTGRES_PASSWORD: ADADfgflslksflkoeWEW34dfdTZT56
     volumes:
       - postgres_data:/var/lib/postgresql/datav12
+  rabbitmq:
+    image: rabbitmq
 
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A stroemer_test_farid worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - app
+      - rabbitmq
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A stroemer_test_farid beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - app
+      - rabbitmq
 
 volumes:
   postgres_data:

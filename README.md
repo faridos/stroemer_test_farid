@@ -11,6 +11,8 @@ docker-compose run --rm app python manage.py fetch_posts_comments
 sensitive Data should not be pushed, should be added to gitignore, all env vars are env file .env.dev
 
 use celery as task runner
-redis to work alongside with celery
+rabbitmq to work alongside with celery
 
 use normal uer, not root in docker
+
+changed the settings for Databases.
