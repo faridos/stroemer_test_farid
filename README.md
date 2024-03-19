@@ -16,3 +16,6 @@ rabbitmq to work alongside with celery
 use normal uer, not root in docker
 
 changed the settings for Databases.
+
+
+ django.db.utils.OperationalError: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory

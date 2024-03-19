@@ -24,6 +24,7 @@ services:
       POSTGRES_DB: stroemer_db
       POSTGRES_USER: faridmagh
       POSTGRES_PASSWORD: ADADfgflslksflkoeWEW34dfdTZT56
+    user: 'postgres'
     volumes:
       - postgres_data:/var/lib/postgresql/datav12
   rabbitmq:
