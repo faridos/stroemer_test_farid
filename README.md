@@ -1,4 +1,9 @@
+using the required tack stack : 
+i was able to install everything 
+
 pip freeze > requirements.txt
+
+
 docker-compose up
 flak8 .  before running server so i make sure everything is fine
 write unit tests and integration tests

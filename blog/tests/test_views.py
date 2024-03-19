@@ -3,7 +3,8 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 
-from blog.models import Post, Comment, FakeUser
+from blog.models import Post, Comment
+from myauth.models import FakeUser
 
 
 class PostCRUDTests(TestCase):
@@ -81,8 +82,9 @@ class CommentCRUDTests(TestCase):
     def test_list_comments_of_specific_post(self):
         """
         Test get all comments of specific post.
-        becarefull with pagination, screwed up the test when pagination added
-        the result.data does not work anymore, it should be response.data['results']
+        becarefull with pagination, tests fail when pagination added
+        ! the result.data does not work anymore, it should be response.data['results']
+        ! post id is a query param instead, for decoupling.
         """
         url = reverse('comment-list-create')
         response = self.client.get(url, {'post': self.post.id})

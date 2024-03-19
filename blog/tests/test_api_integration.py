@@ -1,7 +1,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from blog.models import Post, Comment, FakeUser
+from blog.models import Post, Comment
+from myauth.models import FakeUser
 
 
 class BlogApiTest(APITestCase):
