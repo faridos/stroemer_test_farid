@@ -5,7 +5,7 @@ Description: This file contains the tests for our serializers module.
 """
 
 from django.test import TestCase
-from blog.models import Post, Comment
+from blog.models import Post
 from blog.serializers import PostSerializer, CommentSerializer
 
 

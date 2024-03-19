@@ -4,7 +4,8 @@ services:
   app:
     build: .
     restart: always
-    command: sh -c "python manage.py makemigrations &&
+    command: sh -c "flake8 --ignore=E501 . && 
+                    python manage.py makemigrations &&
                     python manage.py migrate &&
                     python manage.py runserver 0.0.0.0:8000"
     volumes:

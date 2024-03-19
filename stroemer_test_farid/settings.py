@@ -95,11 +95,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME':  os.environ.get('DB_NAME'),
-            'USER':  os.environ.get('DB_USER'),
-            'PASSWORD':  os.environ.get('POSTGRES_PASSWORD'),
-            'HOST':  os.environ.get('DB_HOST'),  # This is the name of the PostgreSQL service defined in Docker Compose
-            'PORT':  os.environ.get('DB_PORT'),
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST'),  # This is the name of the PostgreSQL service defined in Docker Compose
+            'PORT': os.environ.get('DB_PORT'),
         }
     }
 
@@ -158,8 +158,8 @@ CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_BEAT_SCHEDULE = {
     'fetch_posts_comments_daily': {
         'task': 'blog.tasks.task_fetch_daily',  # Update with your actual task path
-        # 'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
-        'schedule':  30.0,  # Run every 30 sec
+        'schedule': crontab(hour=0, minute=0),  # Run daily at midnight
+        # 'schedule': 30.0,  # Run every 30 sec
     },
 }
 

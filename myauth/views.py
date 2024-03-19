@@ -61,7 +61,7 @@ def refresh_token(request):
             token = RefreshToken(refresh_token)
             access_token = str(token.access_token)
             return Response({'access_token': access_token})
-        except TokenError as e:
+        except TokenError:
             return Response({'error': 'Invalid refresh token'}, status=400)
     else:
         return Response({'error': 'Refresh token not provided'}, status=400)

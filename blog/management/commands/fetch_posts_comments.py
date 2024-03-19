@@ -23,7 +23,7 @@ class Command(BaseCommand):
     help = 'Sync data from remote server to local database'
 
     def handle(self, *args, **options):
-        self.stdout.write(f"starting fetching.........")
+        self.stdout.write("starting fetching.........")
         start_time = time.time()
         asyncio.run(self.sync_data())
         end_time = time.time()
@@ -72,4 +72,3 @@ class Command(BaseCommand):
             )
             msg = f'Inserted comment with ID {comment_obj.id}' if created else f'Updated comment with ID {comment_obj.id}'
             self.stdout.write(self.style.SUCCESS(msg))
-

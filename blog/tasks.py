@@ -31,7 +31,7 @@ def sync_post_with_remote(data: Union[int, dict], action="POST"):
 def sync_comment_with_remote(data: Union[int, dict], action="POST"):
     object_id = data.get("id") if isinstance(data, dict) else data
     model_name = "comment"
-    url = build_url(model_name+"s", object_id)
+    url = build_url(model_name + "s", object_id)
     _make_remote_request(object_id, model_name, url, action, data)
 
 

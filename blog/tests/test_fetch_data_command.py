@@ -57,5 +57,3 @@ class CommandTestCase(TestCase):
     def test_handle_command_comment_creation_failure(self, mock_comment_create, mock_api_client):
         with self.assertRaises(Exception):
             call_command('fetch_posts_comments')
-
-
