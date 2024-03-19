@@ -10,6 +10,7 @@ A. Run migrations and fetch data manually:
 docker-compose run --rm app python manage.py makemigrations
 docker-compose run --rm app python manage.py migrate
 docker-compose run --rm app python manage.py fetch_posts_comments # Manually fetch data
+docker-compose run --rm app python manage.py test blog --debug-mode --force-color  --traceback  # for tests
 ```
 
 B. Start the server:
