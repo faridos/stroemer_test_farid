@@ -3,6 +3,10 @@ i was able to install everything
 
 pip freeze > requirements.txt
 
+i used FakeUser class since no user model implemetation required 
+i had to customize the default authentication class from restframerwork simplewht Class, to return me the FakseUser, in 
+order to be able to auth
+
 
 docker-compose up
 flak8 .  before running server so i make sure everything is fine
