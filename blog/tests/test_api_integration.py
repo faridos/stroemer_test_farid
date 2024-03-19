@@ -1,3 +1,9 @@
+"""
+File: serializers.py
+Author: Farid Maghraoui
+Description: This file contains  the integration tests.
+"""
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status

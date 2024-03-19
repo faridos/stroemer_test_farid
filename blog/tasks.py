@@ -1,16 +1,9 @@
-from celery import shared_task
-from celery import shared_task
 from django.core.management import call_command
 from django.conf import settings
 from typing import Union
 import requests
 import logging
 from celery import shared_task
-
-
-@shared_task
-def test_task():
-    print("Hello from Celery!")
 
 
 @shared_task

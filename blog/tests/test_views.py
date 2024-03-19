@@ -1,5 +1,10 @@
+"""
+File: serializers.py
+Author: Farid Maghraoui
+Description: This file contains the tests for the views.py file.
+"""
+
 from django.test import TestCase
-from rest_framework.test import APIRequestFactory
 from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 

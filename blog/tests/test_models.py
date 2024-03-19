@@ -1,3 +1,9 @@
+"""
+File: serializers.py
+Author: Farid Maghraoui
+Description: This file contains the tests for our models.
+"""
+
 from django.test import TestCase
 from django.db.utils import IntegrityError
 from blog.models import Post, Comment

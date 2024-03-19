@@ -115,7 +115,10 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
         # Trigger synchronization task for creating a comment
-        sync_comment_with_remote.delay(serializer.data, action="POST")
+        sync_comment_with_remote.delay(
+            serializer.data,
+            action="POST",
+        )
 
 
 class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

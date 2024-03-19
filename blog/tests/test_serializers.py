@@ -1,4 +1,9 @@
-from _testcapi import raise_exception
+"""
+File: serializers.py
+Author: Farid Maghraoui
+Description: This file contains the tests for our serializers module.
+"""
+
 from django.test import TestCase
 from blog.models import Post, Comment
 from blog.serializers import PostSerializer, CommentSerializer
