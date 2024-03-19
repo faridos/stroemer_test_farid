@@ -22,10 +22,9 @@ services:
     image: postgres:12-alpine
     restart: always
     environment:
-      POSTGRES_DB: stroemer_db
-      POSTGRES_USER: faridmagh
-      POSTGRES_PASSWORD: ADADfgflslksflkoeWEW34dfdTZT56
-    user: 'postgres'
+      POSTGRES_DB: '${DB_NAME}'
+      POSTGRES_USER: '${DB_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
     volumes:
       - postgres_data:/var/lib/postgresql/datav12
   rabbitmq:

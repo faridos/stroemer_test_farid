@@ -39,6 +39,6 @@ urlpatterns = [
     path('api/v1/mytoken/', generate_token, name='token_obtain_pair'),
     path('api/v1/mytoken/refresh/', refresh_token, name='token_refresh'),
     # api docs
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/v1/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('api/v1/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
