@@ -7,6 +7,7 @@ Description: This file contains views for generating and refreshing JWT tokens u
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from myauth.models import FakeUser
 
 
 @api_view(['POST'])
@@ -26,7 +27,10 @@ def generate_token(request):
     --------
     A JSON response containing the generated JWT token pair (refresh token and access token).
         """
-    token = RefreshToken()
+    token = RefreshToken.for_user(FakeUser(id=99999942))
+    # Set the token lifetime to None to make it a one-time use token
+    token.access_token.set_exp(lifetime=None)
+
     return Response({
         'refresh': str(token),
         'access': str(token.access_token),
