@@ -3,7 +3,7 @@ File: serializers.py
 Author: Farid Maghraoui
 Description: This file contains a django command to fetch data from remote server.
 """
-from blog.api_client import APIClient
+from blog.api_client import AsyncAPIClient
 from blog.models import Post, Comment
 from django.core.management.base import BaseCommand
 from channels.db import database_sync_to_async
@@ -11,7 +11,7 @@ import asyncio
 import time
 
 BASE_API_URL = 'https://jsonplaceholder.typicode.com/'
-api_client = APIClient(base_url=BASE_API_URL)
+api_client = AsyncAPIClient(base_url=BASE_API_URL)
 
 
 async def process_comments(post_id):

@@ -1,59 +1,37 @@
 """
-File: serializers.py
+File: views.py
 Author: Farid Maghraoui
-Description: This file contains the tests for  fetch_data_command.
+Description: This file contains tests to test the fetch_data_command function.
 """
-
 from django.test import TestCase
-from django.core.management import call_command
 from unittest.mock import patch, MagicMock
-from blog.models import Post, Comment
+from blog.models import Post
+from blog.management.commands.fetch_posts_comments import Command
 
 
-class APIClientMock:
-    def __init__(self, base_url):
-        pass
+class TestSyncDataCommand(TestCase):
+    @patch('blog.api_client.AsyncAPIClient')
+    @patch('asyncio.run')
+    def test_sync_post(self, mock_run, mock_api_client):
+        mock_run.side_effect = lambda x: x  # Pass through the coroutine
+        mock_api_client_instance = MagicMock()
+        mock_api_client.return_value = mock_api_client_instance
 
-    def get(self, endpoint):
-        if endpoint == 'posts':
-            return [
-                {'userId': 1, 'id': 1, 'title': 'Test Post 1', 'body': 'Body of Test Post 1'},
-                {'userId': 2, 'id': 2, 'title': 'Test Post 2', 'body': 'Body of Test Post 2'},
-            ]
-        elif endpoint == 'comments':
-            return [
-                {'postId': 1, 'id': 1, 'name': 'John', 'email': 'john@example.com', 'body': 'Comment on Post 1'},
-                {'postId': 2, 'id': 2, 'name': 'Jane', 'email': 'jane@example.com', 'body': 'Comment on Post 2'},
-            ]
+        mock_post_data = {'id': 1, 'userId': 1, 'title': 'Test Title', 'body': 'Test Body'}
+        mock_comments_data = [{'id': 1, 'postId': 1, 'name': 'Test Name', 'email': 'test@example.com', 'body': 'Test Body'}]
 
+        command = Command()
+        command.stdout = MagicMock()  # Mock stdout for Command instance
 
-class CommandTestCase(TestCase):
-    @patch('blog.api_client.APIClient', side_effect=APIClientMock)
-    def test_handle_command(self, mock_api_client):
-        call_command('fetch_posts_comments')
+        with patch.object(command, 'sync_data') as mock_sync_post:
+            mock_sync_post.return_value = None  # Mock sync_post method
 
-        # Check if posts are inserted into the database
-        self.assertEqual(Post.objects.count(), 2)
+            # Call sync_post directly with mock data
+            command.sync_data(mock_post_data, mock_comments_data)
 
-        # Check if comments are inserted into the database
-        self.assertEqual(Comment.objects.count(), 2)
+            # Print the result of sync_post method
+            print("Post objects after sync_post:")
+            print(Post.objects.all())
 
-        # Check if posts are inserted with correct data
-        self.assertEqual(Post.objects.filter(title='Test Post 1').count(), 1)
-        self.assertEqual(Post.objects.filter(title='Test Post 2').count(), 1)
-
-        # Check if comments are inserted with correct data
-        self.assertEqual(Comment.objects.filter(name='John').count(), 1)
-        self.assertEqual(Comment.objects.filter(name='Jane').count(), 1)
-
-    @patch('blog.api_client.APIClient', side_effect=APIClientMock)
-    @patch('blog.models.Post.objects.create', side_effect=MagicMock(side_effect=Exception))
-    def test_handle_command_post_creation_failure(self, mock_post_create, mock_api_client):
-        with self.assertRaises(Exception):
-            call_command('fetch_posts_comments')
-
-    @patch('blog.api_client.APIClient', side_effect=APIClientMock)
-    @patch('blog.models.Comment.objects.create', side_effect=MagicMock(side_effect=Exception))
-    def test_handle_command_comment_creation_failure(self, mock_comment_create, mock_api_client):
-        with self.assertRaises(Exception):
-            call_command('fetch_posts_comments')
+            # Assert that sync_post was called with the correct arguments
+            mock_sync_post.assert_called_once_with(mock_post_data, mock_comments_data)

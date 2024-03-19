@@ -13,7 +13,7 @@ from myauth.models import FakeUser
 
 class BlogApiTest(APITestCase):
     def setUp(self):
-        self.user = FakeUser()  # Assuming you have a FakeUser class for testing purposes
+        self.user = FakeUser(id=99999942)
         self.client.force_authenticate(user=self.user)
         self.post = Post.objects.create(title='Test Post', body='Test Body', user=1)
         self.comment = Comment.objects.create(

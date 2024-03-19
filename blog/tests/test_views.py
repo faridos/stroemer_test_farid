@@ -15,7 +15,7 @@ from myauth.models import FakeUser
 class PostCRUDTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.client.force_authenticate(user=FakeUser())
+        self.client.force_authenticate(user=FakeUser(id=99999942))
         self.post = Post.objects.create(title='Test Post', body='Test Body', user=99999942)
 
     def test_create_post(self):
@@ -50,7 +50,7 @@ class PostCRUDTests(TestCase):
 class CommentCRUDTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.client.force_authenticate(user=FakeUser())
+        self.client.force_authenticate(user=FakeUser(id=99999942))
         self.post = Post.objects.create(title='Test ttt  ttt Post', body='Test test test Body', user=99999942)
         self.comment = Comment.objects.create(
             post=self.post,
